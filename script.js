@@ -1,5 +1,5 @@
 const apiEndpoint = "https://api.openweathermap.org/data/3.0/onecall";
-const apiKey = "";
+const apiKey = "b98f7f5daacb7bcdae27b2d0b47e8e73";
 
 marseilleLocation = {
     "lon": 5.369780,
@@ -52,7 +52,7 @@ function displayCurrentWeatherDetails(jsonData) {
     const calculationTime = unixToDatetime(jsonData["current"]["dt"]);
 
     console.log(`Actual temperature: ${currentTemp} °C\nFeels like: ${feelsLikeTemp} °C\n` +
-        `Current wind speed: ${currentWindSpeed} km/h\nCurrent wind degree: ${currentWindDegree}°\n` +
+        `Current wind speed: ${currentWindSpeed} km/h\nCurrent wind degree: ${currentWindDegree}°\n\n` +
         `Sunset time: ${sunsetTime}\nWeather description: ${weatherDescription}\n` +
         `Calculation time: ${calculationTime}\n`);
 }
