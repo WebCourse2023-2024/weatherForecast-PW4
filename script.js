@@ -88,13 +88,8 @@ function getWeatherDetails(jsonData) {
 
 let buttonElement = document.querySelector(".explore-btn");
 buttonElement.addEventListener("click", async () => {
-    console.log("0")
     let inputElement = document.querySelector(".city-input");
-    console.log(inputElement.value);
-    console.log("1");
     cityName = inputElement.value.trim();
-    console.log(cityName);
-    console.log("2");
     if (cityName !== '') {
         await launchRequest(cityName);
         console.log(weatherDetails)
