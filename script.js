@@ -4,27 +4,18 @@ const geocodingEndpoint = "http://api.openweathermap.org/geo/1.0/direct"
 let oneCallUrl = new URL(apiEndpoint);
 let geocodingUrl = new URL(geocodingEndpoint);
 const cityName = "Marseille"
-marseilleLocation = {
-    "lon": 5.369780,
-    "lat": 43.296482
-}
-
-const oneCallParameters  = {
-    ...marseilleLocation,
-    "appid": apiKey,
-    "exclude": "hourly,minutely,daily"
-}
+let marseilleLocation = {}
 
 const geocodingParams = {
     "q": cityName,
     "appid": apiKey
 }
 
-Object.keys(oneCallParameters).forEach(key => oneCallUrl.searchParams.append(key, oneCallParameters[key]));
 Object.keys(geocodingParams).forEach(key => geocodingUrl.searchParams.append(key, geocodingParams[key]));
 
 async function launchRequest(){
     try {
+        await findLocationCoordinates();
         const response = await fetch(oneCallUrl);
         if (!response.ok){
             console.log("Request reached the server but there was")
@@ -40,16 +31,33 @@ async function launchRequest(){
 async function findLocationCoordinates(){
     try {
         const response = await fetch(geocodingUrl);
-        if (!response.ok){
+        if (!response.ok) {
             console.log("Request reached the server but there was");
         } else {
             const responseReturn = await response.json();
             const data = responseReturn[0]
-            displayCityCoordinates(data);
+            marseilleLocation = getCityCoordinates(data);
+            updateOneCallSearchParams();
         }
     } catch (error) {
         console.error("Fetch error: error");
     }
+}
+
+function getCityCoordinates(cityData){
+    return {
+        "lon": cityData.lon,
+        "lat": cityData.lat
+    }
+}
+
+function updateOneCallSearchParams(){
+    const oneCallParameters  = {
+        ...marseilleLocation,
+        "appid": apiKey,
+        "exclude": "hourly,minutely,daily"
+    }
+    Object.keys(oneCallParameters).forEach(key => oneCallUrl.searchParams.append(key, oneCallParameters[key]));
 }
 
 function metersPerSecToKmPerHour(value) {
@@ -90,5 +98,4 @@ function displayCityCoordinates(cityData){
                 "Latitude: " + latitudeCoordinate);
 }
 
-//launchRequest();
-findLocationCoordinates();
+launchRequest();
