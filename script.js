@@ -70,10 +70,15 @@ function metersPerSecToKmPerHour(value) {
     return ((value * 3600) / 1000).toFixed(1);
 }
 
-function unixToDatetime(unixTime) {
-    return new Date(unixTime * 1000);
-}
-
 function kelvinToDegree(kelvinTemp) {
     return (kelvinTemp - 273.15).toFixed(1);
+}
+
+function getWeatherDetails(jsonData) {
+    return {
+        "currentTemp": kelvinToDegree(jsonData["current"]["temp"]),
+        "feelsLikeTemp": kelvinToDegree(jsonData["current"]["temp"]),
+        "windSpeed": metersPerSecToKmPerHour(jsonData["current"]["wind_speed"]),
+        "description": jsonData["current"]["weather"][0].description
+    }
 }
