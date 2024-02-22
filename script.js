@@ -1,7 +1,9 @@
 const apiEndpoint = "https://api.openweathermap.org/data/3.0/onecall";
 const apiKey = "b98f7f5daacb7bcdae27b2d0b47e8e73";
+const geocodingEndpoint = "http://api.openweathermap.org/geo/1.0/direct"
 let oneCallUrl = new URL(apiEndpoint);
-
+let geocodingUrl = new URL(geocodingEndpoint);
+const cityName = "Marseille"
 marseilleLocation = {
     "lon": 5.369780,
     "lat": 43.296482
@@ -13,7 +15,13 @@ const oneCallParameters  = {
     "exclude": "hourly,minutely,daily"
 }
 
+const geocodingParams = {
+    "q": cityName,
+    "appid": apiKey
+}
+
 Object.keys(oneCallParameters).forEach(key => oneCallUrl.searchParams.append(key, oneCallParameters[key]));
+Object.keys(geocodingParams).forEach(key => geocodingUrl.searchParams.append(key, geocodingParams[key]));
 
 async function launchRequest(){
     try {
@@ -26,6 +34,21 @@ async function launchRequest(){
         }
     } catch (error) {
         console.error("Fetch error", error);
+    }
+}
+
+async function findLocationCoordinates(){
+    try {
+        const response = await fetch(geocodingUrl);
+        if (!response.ok){
+            console.log("Request reached the server but there was");
+        } else {
+            const responseReturn = await response.json();
+            const data = responseReturn[0]
+            displayCityCoordinates(data);
+        }
+    } catch (error) {
+        console.error("Fetch error: error");
     }
 }
 
@@ -56,4 +79,16 @@ function displayCurrentWeatherDetails(jsonData) {
         `Calculation time: ${calculationTime}\n`);
 }
 
-launchRequest();
+function displayCityCoordinates(cityData){
+    const longitudeCoordinate = cityData["lon"];
+    const latitudeCoordinate = cityData["lat"];
+    const name = cityData.name
+    const state = cityData.state
+    console.log("City Name: " + name + "\n" +
+                "State Name: " + state + "\n\n" +
+                "Longitude: " + longitudeCoordinate + "\n" +
+                "Latitude: " + latitudeCoordinate);
+}
+
+//launchRequest();
+findLocationCoordinates();
