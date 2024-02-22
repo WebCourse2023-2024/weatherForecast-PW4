@@ -1,12 +1,21 @@
 const apiEndpoint = "https://api.openweathermap.org/data/3.0/onecall";
-const apiKey = "b98f7f5daacb7bcdae27b2d0b47e8e73";
+const apiKey = "f6ca63f480811df3a9a6d584387439d5";
+const geocodingEndpoint = "http://api.openweathermap.org/geo/1.0/direct";
 
 marseilleLocation = {
     "lon": 5.369780,
     "lat": 43.296482
 }
 
-let url = new URL(apiEndpoint);
+let oneCallUrl = new URL(apiEndpoint);
+let geocodingUrl = new URL(geocodingEndpoint);
+
+const geocodingParams = {
+    "q": "Marseille, fr",
+    "appid": apiKey
+}
+
+Object.keys(geocodingParams).forEach(key => geocodingUrl.searchParams.append(key, geocodingParams[key]));
 
 const oneCallParameters  = {
     ...marseilleLocation,
@@ -14,13 +23,15 @@ const oneCallParameters  = {
     "exclude": "hourly,minutely,daily"
 }
 
-Object.keys(oneCallParameters).forEach(key => url.searchParams.append(key, oneCallParameters[key]));
+Object.keys(oneCallParameters).forEach(key => oneCallUrl.searchParams.append(key, oneCallParameters[key]));
 
 async function launchRequest(){
     try {
-        const response = await fetch(url);
+        const response = await fetch(oneCallUrl);
         if (!response.ok){
-            console.log("Server Error")
+            console.log(response.ok)
+            console.log(response);
+            console.log("Request reached the server but there was")
         } else {
             const data = await response.json();
             displayCurrentWeatherDetails(data);
@@ -29,6 +40,14 @@ async function launchRequest(){
         console.error("Fetch error", error);
     }
 }
+
+async function findLocationCoordinates(){
+    const response = await fetch(geocodingEndpoint);
+    const data = await response.json();
+    console.log(data);
+}
+
+//findLocationCoordinates();
 
 function metersPerSecToKmPerHour(value) {
     return ((value * 3600) / 1000).toFixed(1);
