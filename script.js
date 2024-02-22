@@ -49,6 +49,14 @@ function getCityCoordinates(cityData){
     }
 }
 
+function updateGeocodingSearchParams(cityName){
+    const geocodingParams = {
+        "q": cityName,
+        "appid": apiKey
+    }
+    Object.keys(geocodingParams).forEach(key => geocodingUrl.searchParams.append(key, geocodingParams[key]));
+}
+
 function updateOneCallSearchParams(){
     const oneCallParameters  = {
         ...marseilleLocation,
