@@ -3,44 +3,42 @@ const apiKey = "b98f7f5daacb7bcdae27b2d0b47e8e73";
 const geocodingEndpoint = "http://api.openweathermap.org/geo/1.0/direct"
 let oneCallUrl = new URL(apiEndpoint);
 let geocodingUrl = new URL(geocodingEndpoint);
-const cityName = "Marseille"
 let marseilleLocation = {}
+let weatherDetails = {}
 
-const geocodingParams = {
-    "q": cityName,
-    "appid": apiKey
-}
 
-Object.keys(geocodingParams).forEach(key => geocodingUrl.searchParams.append(key, geocodingParams[key]));
-
-async function launchRequest(){
+async function launchRequest(cityName){
     try {
-        await findLocationCoordinates();
+        await findLocationCoordinates(cityName);
         const response = await fetch(oneCallUrl);
+        //console.log(response);
         if (!response.ok){
             console.log("Request reached the server but there was")
         } else {
             const data = await response.json();
-            displayCurrentWeatherDetails(data);
+            weatherDetails = getWeatherDetails(data);
         }
     } catch (error) {
         console.error("Fetch error", error);
     }
 }
 
-async function findLocationCoordinates(){
+async function findLocationCoordinates(cityName){
     try {
+        updateGeocodingSearchParams(cityName);
         const response = await fetch(geocodingUrl);
+        //console.log(response);
         if (!response.ok) {
-            console.log("Request reached the server but there was");
+            console.error("Error in weather API request:", response.statusText);
         } else {
             const responseReturn = await response.json();
-            const data = responseReturn[0]
+            //console.log(responseReturn);
+            const data = responseReturn[0];
             marseilleLocation = getCityCoordinates(data);
             updateOneCallSearchParams();
         }
     } catch (error) {
-        console.error("Fetch error: error");
+        console.error("Fetch error: " + error);
     }
 }
 
@@ -71,31 +69,3 @@ function unixToDatetime(unixTime) {
 function kelvinToDegree(kelvinTemp) {
     return (kelvinTemp - 273.15).toFixed(1);
 }
-
-function displayCurrentWeatherDetails(jsonData) {
-    const currentTemp = kelvinToDegree(jsonData["current"]["temp"]);
-    const feelsLikeTemp = kelvinToDegree(jsonData["current"]["feels_like"]);
-    const sunsetTime = unixToDatetime(jsonData["current"]["sunset"]);
-    const currentWindSpeed = metersPerSecToKmPerHour(jsonData["current"]["wind_speed"]);
-    const currentWindDegree = jsonData["current"]["wind_deg"];
-    const weatherDescription = jsonData["current"]["weather"][0].description;
-    const calculationTime = unixToDatetime(jsonData["current"]["dt"]);
-
-    console.log(`Actual temperature: ${currentTemp} °C\nFeels like: ${feelsLikeTemp} °C\n` +
-        `Current wind speed: ${currentWindSpeed} km/h\nCurrent wind degree: ${currentWindDegree}°\n\n` +
-        `Sunset time: ${sunsetTime}\nWeather description: ${weatherDescription}\n` +
-        `Calculation time: ${calculationTime}\n`);
-}
-
-function displayCityCoordinates(cityData){
-    const longitudeCoordinate = cityData["lon"];
-    const latitudeCoordinate = cityData["lat"];
-    const name = cityData.name
-    const state = cityData.state
-    console.log("City Name: " + name + "\n" +
-                "State Name: " + state + "\n\n" +
-                "Longitude: " + longitudeCoordinate + "\n" +
-                "Latitude: " + latitudeCoordinate);
-}
-
-launchRequest();
