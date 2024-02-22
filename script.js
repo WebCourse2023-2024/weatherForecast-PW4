@@ -6,6 +6,7 @@ let geocodingUrl = new URL(geocodingEndpoint);
 let cityName = "";
 let marseilleLocation = {}
 let weatherDetails = {}
+let weatherInfoElement = document.querySelector(".weather-info");
 
 
 async function launchRequest(cityName){
@@ -13,7 +14,6 @@ async function launchRequest(cityName){
         oneCallUrl = new URL(apiEndpoint);
         await findLocationCoordinates(cityName);
         const response = await fetch(oneCallUrl);
-        //console.log(response);
         if (!response.ok){
             console.log("Request reached the server but there was")
         } else {
@@ -30,12 +30,10 @@ async function findLocationCoordinates(cityName){
         geocodingUrl = new URL(geocodingEndpoint);
         updateGeocodingSearchParams(cityName);
         const response = await fetch(geocodingUrl);
-        //console.log(response);
         if (!response.ok) {
             console.error("Error in weather API request:", response.statusText);
         } else {
             const responseReturn = await response.json();
-            //console.log(responseReturn);
             const data = responseReturn[0];
             marseilleLocation = getCityCoordinates(data);
             updateOneCallSearchParams();
@@ -86,13 +84,30 @@ function getWeatherDetails(jsonData) {
     }
 }
 
+function show(element) {
+    element.style.display = "";
+}
+
+function hide(element) {
+    element.style.display = "none";
+}
+
+function displayWeather(weatherDetails){
+    let weatherInfoElement = document.querySelector(".weather-info");
+    console.log(weatherInfoElement)
+    weatherInfoElement.innerText = `Temperature: ${weatherDetails.currentTemp}°C | Condition: ${weatherDetails.description}`;
+    show(weatherInfoElement)
+}
+
+
+hide(weatherInfoElement)
 let buttonElement = document.querySelector(".explore-btn");
 buttonElement.addEventListener("click", async () => {
     let inputElement = document.querySelector(".city-input");
     cityName = inputElement.value.trim();
     if (cityName !== '') {
         await launchRequest(cityName);
-        console.log(weatherDetails)
+        displayWeather(weatherDetails);
     } else {
         console.error("Please enter a valid city name");
     }
