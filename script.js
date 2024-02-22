@@ -3,12 +3,14 @@ const apiKey = "b98f7f5daacb7bcdae27b2d0b47e8e73";
 const geocodingEndpoint = "http://api.openweathermap.org/geo/1.0/direct"
 let oneCallUrl = new URL(apiEndpoint);
 let geocodingUrl = new URL(geocodingEndpoint);
+let cityName = "";
 let marseilleLocation = {}
 let weatherDetails = {}
 
 
 async function launchRequest(cityName){
     try {
+        oneCallUrl = new URL(apiEndpoint);
         await findLocationCoordinates(cityName);
         const response = await fetch(oneCallUrl);
         //console.log(response);
@@ -25,6 +27,7 @@ async function launchRequest(cityName){
 
 async function findLocationCoordinates(cityName){
     try {
+        geocodingUrl = new URL(geocodingEndpoint);
         updateGeocodingSearchParams(cityName);
         const response = await fetch(geocodingUrl);
         //console.log(response);
@@ -82,16 +85,3 @@ function getWeatherDetails(jsonData) {
         "description": jsonData["current"]["weather"][0].description
     }
 }
-
-const buttonElement = document.querySelector(".explore-btn");
-buttonElement.addEventListener("click", () => {
-    const inputElement = document.querySelector(".city-input");
-    const cityName = inputElement.value.trim();
-    if (cityName !== '') {
-        launchRequest(cityName).then(r => {
-            console.log(weatherDetails);
-        });
-    } else {
-        console.error("Please enter a valid city name");
-    }
-})
