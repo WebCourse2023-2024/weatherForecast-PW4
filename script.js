@@ -82,3 +82,16 @@ function getWeatherDetails(jsonData) {
         "description": jsonData["current"]["weather"][0].description
     }
 }
+
+const buttonElement = document.querySelector(".explore-btn");
+buttonElement.addEventListener("click", () => {
+    const inputElement = document.querySelector(".city-input");
+    const cityName = inputElement.value.trim();
+    if (cityName !== '') {
+        launchRequest(cityName).then(r => {
+            console.log(weatherDetails);
+        });
+    } else {
+        console.error("Please enter a valid city name");
+    }
+})
