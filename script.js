@@ -1,54 +1,12 @@
 const apiEndpoint = "https://api.openweathermap.org/data/3.0/onecall";
 const apiKey = "b98f7f5daacb7bcdae27b2d0b47e8e73";
-const geocodingEndpoint = "http://api.openweathermap.org/geo/1.0/direct"
+const geocodingEndpoint = "https://api.openweathermap.org/geo/1.0/direct"
 let oneCallUrl = new URL(apiEndpoint);
 let geocodingUrl = new URL(geocodingEndpoint);
 let cityName = "";
 let marseilleLocation = {}
 let weatherDetails = {}
 let weatherInfoElement = document.querySelector(".weather-info");
-
-
-async function launchRequest(cityName){
-    try {
-        oneCallUrl = new URL(apiEndpoint);
-        await findLocationCoordinates(cityName);
-        const response = await fetch(oneCallUrl);
-        if (!response.ok){
-            console.log("Request reached the server but there was")
-        } else {
-            const data = await response.json();
-            weatherDetails = getWeatherDetails(data);
-        }
-    } catch (error) {
-        console.error("Fetch error", error);
-    }
-}
-
-async function findLocationCoordinates(cityName){
-    try {
-        geocodingUrl = new URL(geocodingEndpoint);
-        updateGeocodingSearchParams(cityName);
-        const response = await fetch(geocodingUrl);
-        if (!response.ok) {
-            console.error("Error in weather API request:", response.statusText);
-        } else {
-            const responseReturn = await response.json();
-            const data = responseReturn[0];
-            marseilleLocation = getCityCoordinates(data);
-            updateOneCallSearchParams();
-        }
-    } catch (error) {
-        console.error("Fetch error: " + error);
-    }
-}
-
-function getCityCoordinates(cityData){
-    return {
-        "lon": cityData.lon,
-        "lat": cityData.lat
-    }
-}
 
 function updateGeocodingSearchParams(cityName){
     const geocodingParams = {
@@ -81,6 +39,47 @@ function getWeatherDetails(jsonData) {
         "feelsLikeTemp": kelvinToDegree(jsonData["current"]["temp"]),
         "windSpeed": metersPerSecToKmPerHour(jsonData["current"]["wind_speed"]),
         "description": jsonData["current"]["weather"][0].description
+    }
+}
+
+async function launchRequest(cityName){
+    try {
+        oneCallUrl = new URL(apiEndpoint);
+        await findLocationCoordinates(cityName);
+        const response = await fetch(oneCallUrl);
+        if (!response.ok){
+            console.log("Request reached the server but there was")
+        } else {
+            const data = await response.json();
+            weatherDetails = getWeatherDetails(data);
+        }
+    } catch (error) {
+        console.error("Fetch error", error);
+    }
+}
+
+function getCityCoordinates(cityData){
+    return {
+        "lon": cityData.lon,
+        "lat": cityData.lat
+    }
+}
+
+async function findLocationCoordinates(cityName){
+    try {
+        geocodingUrl = new URL(geocodingEndpoint);
+        updateGeocodingSearchParams(cityName);
+        const response = await fetch(geocodingUrl);
+        if (!response.ok) {
+            console.error("Error in weather API request:", response.statusText);
+        } else {
+            const responseReturn = await response.json();
+            const data = responseReturn[0];
+            marseilleLocation = getCityCoordinates(data);
+            updateOneCallSearchParams();
+        }
+    } catch (error) {
+        console.error("Fetch error: " + error);
     }
 }
 
