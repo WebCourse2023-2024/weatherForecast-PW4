@@ -49,6 +49,7 @@ async function launchRequest(cityName){
         oneCallUrl = new URL(apiEndpoint);
         await findLocationCoordinates(cityName);
         const response = await fetch(oneCallUrl);
+        console.log(response)
         if (!response.ok){
             console.log("Request reached the server but there was")
         } else {
@@ -72,12 +73,14 @@ async function findLocationCoordinates(cityName){
         geocodingUrl = new URL(geocodingEndpoint);
         updateGeocodingSearchParams(cityName);
         const response = await fetch(geocodingUrl);
+        console.log(response)
         if (!response.ok) {
             console.error("Error in weather API request:", response.statusText);
         } else {
             const responseReturn = await response.json();
             const data = responseReturn[0];
             marseilleLocation = getCityCoordinates(data);
+            console.log(data)
             updateOneCallSearchParams();
         }
     } catch (error) {
@@ -126,6 +129,7 @@ formElement.addEventListener("submit", async (event) => {
     if (cityName !== '') {
         await launchRequest(cityName);
         displayWeather(weatherDetails);
+        console.log(weatherDetails);
     } else {
         console.error("Please enter a valid city name");
     }
