@@ -1,3 +1,5 @@
 #ignoring .idea/ directory
 .idea/
 
+#Ignoring low_level_directory
+low_level/
