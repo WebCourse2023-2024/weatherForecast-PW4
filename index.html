@@ -7,13 +7,22 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
+    <div id="container">
+        <header>
         <h1>Weather Consultation</h1>
         <p>Check the weather of any city around the world.</p>
-        <input type="text" class="city-input" placeholder="Enter a city name" required>
-        <button type="submit" class="explore-btn">Check Weather</button>
-        <div class="weather-icon">&#9729;</div>
-        <div class="weather-info">Temperature: 25°C | Condition: Clear Sky</div>
+        </header>
+        <form id="weatherForm">
+            <input type="text" id="city-input" placeholder="Enter a city name" required>
+            <button type="submit" id="button">Search</button>
+        </form>
+        <div id="weather-info">
+            <h1 id="city-name"></h1>
+            <img id="icon" alt="weather descriptive icon">
+            <p id="temperature"></p>
+            <p id="wind-speed"></p>
+            <p id="weather-description"></p>
+        </div>
     </div>
 </body>
 </html>
