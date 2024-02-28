@@ -67,3 +67,10 @@ header > p {
 p {
     margin: 5px 0;
 }
+
+@media screen and (max-width: 550px){
+    input{
+        margin-bottom: 20px;
+    }
+    
+}
