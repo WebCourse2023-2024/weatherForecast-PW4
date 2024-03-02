@@ -1,5 +1,7 @@
 body {
-    font-family: 'Arial', sans-serif;
+    font-family: "Rubik", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
     background-color: #1F6E8C;
     font-size: 25px;
     margin: 0;
@@ -13,7 +15,7 @@ body {
 #container {
     background-color: #2E8A99;
     border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
     padding: 20px;
     text-align: center;
 }
@@ -51,8 +53,8 @@ button {
     cursor: pointer;
 }
 
-.button:hover {
-    background-color: #27ae60;
+button:hover{
+    background-color: rgba(255, 255, 255, .75);
 }
 
 h1 {
@@ -69,7 +71,7 @@ p {
 }
 
 @media screen and (max-width: 550px){
-    input{
+    #city-input{
         margin-bottom: 20px;
     }
     
