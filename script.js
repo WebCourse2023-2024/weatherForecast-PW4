@@ -4,7 +4,7 @@ const geocodingEndpoint = "https://api.openweathermap.org/geo/1.0/direct"
 let oneCallUrl = new URL(apiEndpoint);
 let geocodingUrl = new URL(geocodingEndpoint);
 let cityName = "";
-let marseilleLocation = {}
+let cityCoordinates = {}
 let weatherDetails = {}
 let weatherIconElement = document.getElementById("icon");
 let headerElement = document.querySelector("header");
@@ -19,7 +19,7 @@ function updateGeocodingSearchParams(cityName){
 
 function updateOneCallSearchParams(){
     const oneCallParameters  = {
-        ...marseilleLocation,
+        ...cityCoordinates,
         "appid": apiKey,
         "exclude": "hourly,minutely,daily"
     }
@@ -49,7 +49,6 @@ async function launchRequest(cityName){
         oneCallUrl = new URL(apiEndpoint);
         await findLocationCoordinates(cityName);
         const response = await fetch(oneCallUrl);
-        console.log(response)
         if (!response.ok){
             console.log("Request reached the server but there was")
         } else {
@@ -73,14 +72,12 @@ async function findLocationCoordinates(cityName){
         geocodingUrl = new URL(geocodingEndpoint);
         updateGeocodingSearchParams(cityName);
         const response = await fetch(geocodingUrl);
-        console.log(response)
         if (!response.ok) {
             console.error("Error in weather API request:", response.statusText);
         } else {
             const responseReturn = await response.json();
             const data = responseReturn[0];
-            marseilleLocation = getCityCoordinates(data);
-            console.log(data)
+            cityCoordinates = getCityCoordinates(data);
             updateOneCallSearchParams();
         }
     } catch (error) {
@@ -129,7 +126,6 @@ formElement.addEventListener("submit", async (event) => {
     if (cityName !== '') {
         await launchRequest(cityName);
         displayWeather(weatherDetails);
-        console.log(weatherDetails);
     } else {
         console.error("Please enter a valid city name");
     }
